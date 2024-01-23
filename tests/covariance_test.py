@@ -1,7 +1,8 @@
 import pytest
 import ENDFtk
+import numpy as np
 from pathlib import Path
-from pyerr._covariance import CovarianceControl
+from pyerr._covariance import CovarianceControl, Covariance
 
 @pytest.fixture
 def u235_endf81():
@@ -13,8 +14,21 @@ def u235_endf81():
     lines = file35.section(18).content.split("\n")
     return lines
 
+@pytest.fixture
+def u235_endf81_matrix():
+    filename = Path(__file__).parent / "files" / "u235_endf81_matrix.npy"
+    return np.load(filename)
+    
+
 def test_u235_endf81_control(u235_endf81):
     obj = CovarianceControl(u235_endf81[:2])
     assert obj.MT == 18
     assert obj.MT1 == 18
     assert obj.ZA == 92235
+    assert obj.num_sections == 30
+
+
+def test_u235_endf81(u235_endf81, u235_endf81_matrix):
+    obj = Covariance(u235_endf81,30)
+    assert obj.matrix[0,0] == 9.38155e-20
+    assert np.array_equal(u235_endf81_matrix,obj.matrix)
