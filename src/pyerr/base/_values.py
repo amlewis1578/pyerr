@@ -8,12 +8,12 @@ class Values(ABC):
     Parameters
     ----------
     lines : list
-        list of control lines from the file
+        list of value lines from the file
 
     Attributes
     ----------
     lines : list
-        list of control lines from the file
+        list of value lines from the file
 
     parsed_values : list
         list of the values in the section
