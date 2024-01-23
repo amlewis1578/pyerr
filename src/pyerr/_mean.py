@@ -107,3 +107,71 @@ class MeanValues(Values):
         super().__init__(lines)
         self.num_values = num_values
         self.parsed_values = self.parsed_values[:num_values+1]
+
+class Mean:
+    """
+    Class to parse mean values section of the ERRORR file 
+
+    Parameters
+    ----------
+    lines : list
+        list of lines in MF1MT451
+
+    Attributes
+    ----------
+    control : MeanControl object
+        parsed control lines object
+
+    values : MeanValues object
+        parsed values lines object
+
+    values : list
+        list of mean values
+
+    num_groups : int
+        Number of groups (num_boundaries - 1)
+
+    MAT : int
+        Material number
+
+    MF : int
+        File number
+
+    MT : int
+        Section/reaction number
+
+    incident_energy : float
+        Incident energy for the spectrum, if PFNS
+        
+    """
+
+
+    def __init__(self,lines):
+        self._control = MeanControl(lines[0])
+        self._values = MeanValues(lines[1:-2],self._control.num_groups)
+
+    @property
+    def values(self):
+        return self._values.parsed_values
+    
+    @property
+    def num_groups(self):
+        return self._control.num_groups
+        
+    @property
+    def MAT(self):
+        return self._control.MAT 
+
+    @property
+    def MF(self):
+        return self._control.MF 
+
+    @property 
+    def MT(self):
+        return self._control.MT  
+    
+    @property
+    def incident_energy(self):
+        return self._control.incident_energy
+    
+
