@@ -1,9 +1,13 @@
-from pyerr.base import Control, Values
+from pyerr.base import  Values
+import fortranformat as ff
 
 
-class EnergyGroupControl(Control):
+class MeanControl:
     """
-    Class to parse energy group control lines from the ERRORR files. 
+    Class to parse mean values control lines from the ERRORR files. 
+
+    For some reason this section does not have the first control line,
+    so the Control base class is not used
 
     Parameters
     ----------
@@ -14,12 +18,6 @@ class EnergyGroupControl(Control):
     ----------
     lines : list
         list of control lines from the file
-
-    ZA : int
-        ZA of the material
-
-    AWR : float
-        atomic weight ratio of the material
 
     MAT : int
         Material number
@@ -33,14 +31,12 @@ class EnergyGroupControl(Control):
     parsed_values : list
         list of the values in the control line
 
-    temperature : float
-        temperature at which the evaluation was processed
-
     num_groups : int
         Number of energy groups
 
-    num_boundaries : int
-        Number of energy group boundaries (num_groups + 1)
+    incident_energy : float
+        Incident energy in eV
+
 
     Methods
     -------
@@ -48,16 +44,35 @@ class EnergyGroupControl(Control):
         Parse the control lines by their format string
     """
 
-    def __init__(self,lines):
-        super().__init__(lines)
-        self.temperature = self.parsed_values[10]
-        self.num_groups = self.parsed_values[12]
-        self.num_boundaries = self.parsed_values[14]
+    def __init__(self,line):
+        self.line = line
+        self.parse_line()
+        self.incident_energy = self.parsed_values[1]
+        self.num_groups = self.parsed_values[4]
+        self.MAT = self.parsed_values[6]
+        self.MF = self.parsed_values[7]
+        self.MT = self.parsed_values[8]
+        self.parsed_values = self.parsed_values[:self.num_groups+1]
+
+    def parse_line(self):
+        """ Parse the control line by its format string 
+        
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None, sets the attribute self.parsed_values
+
+        """
+        control_line = ff.FortranRecordReader('(2G11.0,4I11,I4,I2,I3,I5)')
+        self.parsed_values = control_line.read(self.line)
 
 
-class EnergyGroupValues(Values):
+class MeanValues(Values):
     """
-    Class to parse energy group boundaries  
+    Class to parse mean values 
 
     Parameters
     ----------
@@ -93,10 +108,9 @@ class EnergyGroupValues(Values):
         self.num_values = num_values
         self.parsed_values = self.parsed_values[:num_values+1]
 
-
-class EnergyGroups:
+class Mean:
     """
-    Class to parse energy group section of the ERRORR file, in MF1MT451  
+    Class to parse mean values section of the ERRORR file 
 
     Parameters
     ----------
@@ -105,26 +119,17 @@ class EnergyGroups:
 
     Attributes
     ----------
-    control : EnergyGroupControl object
+    control : MeanControl object
         parsed control lines object
 
-    values : EnergyGroupValues object
+    values : MeanValues object
         parsed values lines object
 
-    group_boundaries : list
-        list of group boundaries
-
-    num_boundaries : int
-        number of group boundaries
+    values : list
+        list of mean values
 
     num_groups : int
         Number of groups (num_boundaries - 1)
-
-    ZA : int
-        ZA of the material
-
-    AWR : float
-        atomic weight ratio of the material
 
     MAT : int
         Material number
@@ -135,48 +140,38 @@ class EnergyGroups:
     MT : int
         Section/reaction number
 
-    temperature : float
-        temperature at which the evaluation was processed
+    incident_energy : float
+        Incident energy for the spectrum, if PFNS
         
     """
 
 
     def __init__(self,lines):
-        self.control = EnergyGroupControl(lines[:2])
-        self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
+        self._control = MeanControl(lines[0])
+        self._values = MeanValues(lines[1:-2],self._control.num_groups)
 
     @property
-    def group_boundaries(self):
-        return self.values.parsed_values
+    def values(self):
+        return self._values.parsed_values
     
-    @property
-    def num_boundaries(self):
-        return self.control.num_boundaries
     @property
     def num_groups(self):
-        return self.control.num_groups
-    
-    @property
-    def ZA(self):
-        return self.control.ZA  
-    
-    @property
-    def AWR(self):
-        return self.control.AWR 
+        return self._control.num_groups
         
     @property
     def MAT(self):
-        return self.control.MAT 
+        return self._control.MAT 
 
     @property
     def MF(self):
-        return self.control.MF 
+        return self._control.MF 
 
     @property 
     def MT(self):
-        return self.control.MT  
+        return self._control.MT  
     
     @property
-    def temperature(self):
-        return self.control.temperature
+    def incident_energy(self):
+        return self._control.incident_energy
+    
 

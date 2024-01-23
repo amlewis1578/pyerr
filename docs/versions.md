@@ -1,2 +1,3 @@
 - **0**
     - `0.1.0` - Energy group classes
+    - `0.2.0` - Mean value classes
