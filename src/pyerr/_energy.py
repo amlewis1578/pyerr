@@ -33,6 +33,9 @@ class EnergyGroupControl(Control):
     parsed_values : list
         list of the values in the control line
 
+    temperature : float
+        temperature at which the evaluation was processed
+
     num_groups : int
         Number of energy groups
 
@@ -47,6 +50,7 @@ class EnergyGroupControl(Control):
 
     def __init__(self,lines):
         super().__init__(lines)
+        self.temperature = self.parsed_values[10]
         self.num_groups = self.parsed_values[12]
         self.num_boundaries = self.parsed_values[14]
 
@@ -130,6 +134,9 @@ class EnergyGroups:
 
     MT : int
         Section/reaction number
+
+    temperature : float
+        temperature at which the evaluation was processed
         
     """
 
@@ -168,4 +175,8 @@ class EnergyGroups:
     @property 
     def MT(self):
         return self.control.MT  
+    
+    @property
+    def temperature(self):
+        return self.control.temperature
 

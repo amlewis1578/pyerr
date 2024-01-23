@@ -18,3 +18,4 @@ def test_u235_endf81(u235_endf81):
     assert obj.MT == 451
     assert obj.group_boundaries[0] == 0.000139
     assert obj.num_boundaries == obj.num_groups + 1
+    assert obj.temperature == 293.6
