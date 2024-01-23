@@ -88,3 +88,84 @@ class EnergyGroupValues(Values):
         super().__init__(lines)
         self.num_values = num_values
         self.parsed_values = self.parsed_values[:num_values+1]
+
+
+class EnergyGroups:
+    """
+    Class to parse energy group section of the ERRORR file, in MF1MT451  
+
+    Parameters
+    ----------
+    lines : list
+        list of lines in MF1MT451
+
+    Attributes
+    ----------
+    control : EnergyGroupControl object
+        parsed control lines object
+
+    values : EnergyGroupValues object
+        parsed values lines object
+
+    group_boundaries : list
+        list of group boundaries
+
+    num_boundaries : int
+        number of group boundaries
+
+    num_groups : int
+        Number of groups (num_boundaries - 1)
+
+    ZA : int
+        ZA of the material
+
+    AWR : float
+        atomic weight ratio of the material
+
+    MAT : int
+        Material number
+
+    MF : int
+        File number
+
+    MT : int
+        Section/reaction number
+        
+    """
+
+
+    def __init__(self,lines):
+        self.control = EnergyGroupControl(lines[:2])
+        self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
+
+    @property
+    def group_boundaries(self):
+        return self.values.parsed_values
+    
+    @property
+    def num_boundaries(self):
+        return self.control.num_boundaries
+    @property
+    def num_groups(self):
+        return self.control.num_groups
+    
+    @property
+    def ZA(self):
+        return self.control.ZA  
+    
+    @property
+    def AWR(self):
+        return self.control.AWR 
+        
+    @property
+    def MAT(self):
+        return self.control.MAT 
+
+    @property
+    def MF(self):
+        return self.control.MF 
+
+    @property 
+    def MT(self):
+        return self.control.MT  
+
