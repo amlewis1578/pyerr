@@ -68,3 +68,42 @@ class MeanControl:
         """
         control_line = ff.FortranRecordReader('(2G11.0,4I11,I4,I2,I3,I5)')
         self.parsed_values = control_line.read(self.line)
+
+
+class MeanValues(Values):
+    """
+    Class to parse mean values 
+
+    Parameters
+    ----------
+    lines : list
+        list of value lines from the file
+
+    num_values : int
+        Number of values in the list, so that zeros at the
+        end of the list can be removed
+
+    Attributes
+    ----------
+    lines : list
+        list of value lines from the file
+
+    num_values : int
+        Number of values in the list, so that zeros at the
+        end of the list can be removed
+
+    parsed_values : list
+        list of the values in the section, with zeros at the
+        end of the list removed
+
+    Methods
+    -------
+    parse_lines
+        Parse the lines by their format string
+
+
+    """
+    def __init__(self,lines,num_values):
+        super().__init__(lines)
+        self.num_values = num_values
+        self.parsed_values = self.parsed_values[:num_values+1]

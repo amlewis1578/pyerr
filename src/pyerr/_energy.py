@@ -62,7 +62,7 @@ class EnergyGroupValues(Values):
     Parameters
     ----------
     lines : list
-        list of control lines from the file
+        list of value lines from the file
 
     num_values : int
         Number of values in the list, so that zeros at the
@@ -71,7 +71,7 @@ class EnergyGroupValues(Values):
     Attributes
     ----------
     lines : list
-        list of control lines from the file
+        list of value lines from the file
 
     num_values : int
         Number of values in the list, so that zeros at the

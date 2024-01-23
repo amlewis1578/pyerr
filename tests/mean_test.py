@@ -1,7 +1,7 @@
 import pytest
 import ENDFtk
 from pathlib import Path
-from pyerr._mean import MeanControl
+from pyerr._mean import MeanControl, MeanValues
 
 @pytest.fixture
 def u235_endf81():
@@ -15,8 +15,13 @@ def u235_endf81():
 
 
 def test_u235_endf81(u235_endf81):
-    print(u235_endf81[0])
     obj = MeanControl(u235_endf81[0])
     assert obj.incident_energy == 2.5e5
     assert obj.parsed_values[4] == 30
     assert obj.MT == 18
+
+
+def test_u235_endf81(u235_endf81):
+    obj = MeanValues(u235_endf81[1:-2],30)
+    assert obj.parsed_values[0] == 2.67762e-11
+    assert obj.parsed_values[-1] == 3.564233e-5
