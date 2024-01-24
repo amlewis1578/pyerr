@@ -41,10 +41,16 @@ class Section:
         Mean values of the quantity
 
     covariance_matrix : np.array
-        Covariance matrix
+        Relative covariance matrix
+
+    abs_covariance_matrix : np.array
+        Absolute covariance matrix
 
     uncertainty : np.array
         The uncertainty values
+
+    abs_uncertainty : np.array
+        The absolute uncertainty values
 
     correlation_matrix : np.array
         Correlation matrix
@@ -59,6 +65,11 @@ class Section:
         self._energy = EnergyGroups(energy_lines)
         self._mean = Mean(mean_lines)
         self._covariance = Covariance(covariance_lines,self._energy.num_groups)
+
+        # check lengths
+        print(len(self.mean_values))
+        assert len(self.mean_values) == len(self.group_boundaries) - 1
+        assert len(self.mean_values) == len(self.covariance_matrix)
 
         self.get_correlation_matrix()
 
@@ -98,9 +109,12 @@ class Section:
     def get_correlation_matrix(self):
         """ Function to get the uncertainty vector and correlation matrix """
         self.uncertainty = np.sqrt(np.diag(self.covariance_matrix))
-        print(self.covariance_matrix[-2,:])
-        # print(self.uncertainty)
-        
+        self.abs_uncertainty = self.uncertainty * self.mean_values
+
         unc_mat = self.uncertainty*np.identity(len(self.uncertainty))
         
         self.correlation_matrix = np.linalg.inv(unc_mat)@self.covariance_matrix@np.linalg.inv(unc_mat).T
+
+        # create the absolute covariance matrix from the absolute uncertainty
+        abs_unc_mat = self.abs_uncertainty*np.identity(len(self.uncertainty))
+        self.abs_covariance_matrix = abs_unc_mat@self.correlation_matrix@abs_unc_mat

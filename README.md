@@ -33,6 +33,13 @@ Each `Section` object has the following attributes:
     - num_groups : the number of energy groups
     - group_boundaries : the boundaries of the energy groups, in eV
     - mean_values : mean values for the reaction specified
-    - covariance_matrix : np.array of the covariance matrix
+    - covariance_matrix : np.array of the relative covariance matrix
     - correlation_matrix : np.array of the correlation matrix
-    - uncertainty : np.array of the uncertainty values 
+    - uncertainty : np.array of the relative uncertainty values 
+    - abs_uncertainty : np.array of the absolute uncertainty values 
+    - abs_covariance : np.array of the absolute covariance matrix
+
+
+## details
+
+When running NJOY to get the covariance matrix, the default option to produce a relative covariance matrix should be chosen. There is not a good way to check that this option was chosen (except the OOM of the values) so it is assumed that the covariance is relative when reading.

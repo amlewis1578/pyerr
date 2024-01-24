@@ -15,8 +15,13 @@ def nubar_452_matrix():
     return np.load(filename)
 
 @pytest.fixture
-def u235_endf81():
+def u235_endf81_30():
     filename = Path(__file__).parent / "files" / "u235_endf81_30.txt"
+    return filename
+
+@pytest.fixture
+def u235_endf81():
+    filename = Path(__file__).parent / "files" / "u235_endf81.txt"
     return filename
 
 def test_nubar(nubar_test_file, nubar_452_matrix):
@@ -25,9 +30,16 @@ def test_nubar(nubar_test_file, nubar_452_matrix):
     assert 455 in obj.sections.keys()
     assert 456 in obj.sections.keys()
     assert np.array_equal(obj.sections[452].covariance_matrix, nubar_452_matrix)
+    assert len(obj.sections[452].mean_values) == len(obj.sections[452].uncertainty)
+    assert len(obj.sections[452].mean_values) == len(obj.sections[452].group_boundaries)-1
 
 
-def test_U235_wrong_grouping(u235_endf81):
+def test_U235_wrong_grouping(u235_endf81_30):
     with pytest.raises(SystemExit):
-        ErrorrOutput(u235_endf81)
+        ErrorrOutput(u235_endf81_30)
+
+# @pytest.mark.notready
+def test_U235(u235_endf81):
+    obj = ErrorrOutput(u235_endf81)
+    assert np.isclose(obj.sections[18].abs_covariance_matrix[0,0], 1.06828e-19)
 

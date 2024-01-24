@@ -106,7 +106,7 @@ class MeanValues(Values):
     def __init__(self,lines,num_values):
         super().__init__(lines)
         self.num_values = num_values
-        self.parsed_values = self.parsed_values[:num_values+1]
+        self.parsed_values = self.parsed_values[:num_values]
 
 class Mean:
     """
