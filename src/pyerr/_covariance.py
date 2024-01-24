@@ -1,6 +1,7 @@
 from pyerr.base import  Control, Values
 import fortranformat as ff
 import numpy as np
+import sys
 
 class CovarianceControl(Control):
     """
@@ -89,6 +90,8 @@ class Covariance:
         for i in range(self.control.num_sections):
             if len(cov_lines) > 0:
                 cov_lines = self.parse_section(cov_lines)
+
+        self.check_covariance_matrix()
         
 
     def parse_section(self,lines):
@@ -126,3 +129,14 @@ class Covariance:
         self.matrix[mt_group-1,mt1_group-1:mt1_group-1+num_values] = values
 
         return lines
+    
+    def check_covariance_matrix(self):
+        """ function to check the covariance matrix for:
+        
+        - zeros on the diagonal (gracefully crash)
+        
+        """
+
+        diagonal = np.diag(self.matrix)
+        if np.min(diagonal) <= 0:
+            sys.exit("Covariance matrix has zero and/or negative values along the diagonal. This may be caused by an inappropriate group structure chosen in NJOY - the original structure in the evaluation should be used instead. Exiting.\n")

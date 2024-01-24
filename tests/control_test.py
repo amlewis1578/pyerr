@@ -6,7 +6,7 @@ from pyerr._energy import EnergyGroupControl
 
 @pytest.fixture
 def u235_endf81():
-    filename = Path(__file__).parent / "files" / "u235_endf81.txt"
+    filename = Path(__file__).parent / "files" / "u235_endf81_30.txt"
     tape = ENDFtk.tree.Tape.from_file(str(filename))
     mat_num = tape.material_numbers[0]
     mat = tape.material(mat_num)
