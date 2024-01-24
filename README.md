@@ -37,6 +37,7 @@ Each `Section` object has the following attributes:
     - correlation_matrix : np.array of the correlation matrix
     - uncertainty : np.array of the relative uncertainty values 
     - abs_uncertainty : np.array of the absolute uncertainty values 
+    - abs_covariance : np.array of the absolute covariance matrix
 
 
 ## details
