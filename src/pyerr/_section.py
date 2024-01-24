@@ -92,5 +92,7 @@ class Section:
     def get_correlation_matrix(self):
         """ Function to get the uncertainty vector and correlation matrix """
         self.uncertainty = np.sqrt(np.diag(self.covariance_matrix))
+        
         unc_mat = self.uncertainty*np.identity(len(self.uncertainty))
+        
         self.correlation_matrix = np.linalg.inv(unc_mat)@self.covariance_matrix@np.linalg.inv(unc_mat).T
