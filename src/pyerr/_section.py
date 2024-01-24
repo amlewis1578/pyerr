@@ -43,6 +43,12 @@ class Section:
     covariance_matrix : np.array
         Covariance matrix
 
+    uncertainty : np.array
+        The uncertainty values
+
+    correlation_matrix : np.array
+        Correlation matrix
+
     Methods
     -------
     get_correlation_matrix
