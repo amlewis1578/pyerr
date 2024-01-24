@@ -42,12 +42,19 @@ class Section:
 
     covariance_matrix : np.array
         Covariance matrix
+
+    Methods
+    -------
+    get_correlation_matrix
+        Function to get the uncertainty vector and correlation matrix
     """
 
     def __init__(self,energy_lines, mean_lines, covariance_lines):
         self._energy = EnergyGroups(energy_lines)
         self._mean = Mean(mean_lines)
         self._covariance = Covariance(covariance_lines,self._energy.num_groups)
+
+        self.get_correlation_matrix()
 
 
     @property
@@ -81,3 +88,9 @@ class Section:
     @property
     def covariance_matrix(self):
         return self._covariance.matrix
+    
+    def get_correlation_matrix(self):
+        """ Function to get the uncertainty vector and correlation matrix """
+        self.uncertainty = np.sqrt(np.diag(self.covariance_matrix))
+        unc_mat = self.uncertainty*np.identity(len(self.uncertainty))
+        self.correlation_matrix = np.linalg.inv(unc_mat)@self.covariance_matrix@np.linalg.inv(unc_mat).T
