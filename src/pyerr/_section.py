@@ -46,6 +46,9 @@ class Section:
     uncertainty : np.array
         The uncertainty values
 
+    abs_uncertainty : np.array
+        The absolute uncertainty values
+
     correlation_matrix : np.array
         Correlation matrix
 
@@ -98,9 +101,8 @@ class Section:
     def get_correlation_matrix(self):
         """ Function to get the uncertainty vector and correlation matrix """
         self.uncertainty = np.sqrt(np.diag(self.covariance_matrix))
-        print(self.covariance_matrix[-2,:])
-        # print(self.uncertainty)
-        
+        self.abs_uncertainty = self.uncertainty * self.mean_values
+
         unc_mat = self.uncertainty*np.identity(len(self.uncertainty))
         
         self.correlation_matrix = np.linalg.inv(unc_mat)@self.covariance_matrix@np.linalg.inv(unc_mat).T
