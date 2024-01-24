@@ -26,3 +26,7 @@ def test_nubar(nubar_test_file, nubar_452_matrix):
     assert 456 in obj.sections.keys()
     assert np.array_equal(obj.sections[452].covariance_matrix, nubar_452_matrix)
 
+@pytest.mark.notready
+def test_nubar(u235_endf81):
+    obj = ErrorrOutput(u235_endf81)
+
