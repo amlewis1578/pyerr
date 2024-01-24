@@ -3,3 +3,4 @@
     - `0.2.0` - Mean value classes
     - `0.3.0` - Covariance classes
     - `0.4.0` - Section class
+    - `0.5.0` - Adding absolute uncertainty and covariance
