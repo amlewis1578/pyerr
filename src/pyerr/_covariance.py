@@ -86,7 +86,7 @@ class Covariance:
 
         cov_lines = lines[2:-2]
 
-        for i in range(self.control.num_sections-1):
+        for i in range(self.control.num_sections):
             if len(cov_lines) > 0:
                 cov_lines = self.parse_section(cov_lines)
         
