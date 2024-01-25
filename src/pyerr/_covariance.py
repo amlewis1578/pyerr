@@ -139,4 +139,6 @@ class Covariance:
 
         diagonal = np.diag(self.matrix)
         if np.min(diagonal) <= 0:
-            sys.exit("Covariance matrix has zero and/or negative values along the diagonal. This may be caused by an inappropriate group structure chosen in NJOY - the original structure in the evaluation should be used instead. Exiting.\n")
+            print("Covariance matrix has zero and/or negative values along the diagonal. This may be caused by an inappropriate group structure chosen in NJOY - the original structure in the evaluation should be used instead.")
+            print(diagonal)
+            sys.exit("Zeros on the diagonal.\n")
