@@ -3,6 +3,7 @@ import numpy as np
 import ENDFtk
 from pathlib import Path
 from pyerr import Section
+import matplotlib.pyplot as plt
 
 
 @pytest.fixture
@@ -81,3 +82,6 @@ def test_endf71_pca(endf71_pfns,endf71_eigs):
     # in this case, only 2 are needed to pretty much entirely reconstruct the cov mat
     recon = obj.reconstruct_covariance(2)
     assert np.allclose(recon, obj.abs_covariance_matrix)
+
+    realizations = obj.get_pca_realizations(10,100)
+    assert np.array_equal(realizations.shape, (10,275))
