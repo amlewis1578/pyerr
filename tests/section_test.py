@@ -29,6 +29,7 @@ def nubar_452_matrix():
     filename = Path(__file__).parent / "files" / "nubar_example_matrix.npy"
     return np.load(filename)
 
+
 def test_nubar_452(nubar_test_452, nubar_452_matrix):
     obj = Section(*nubar_test_452)
     assert obj.group_boundaries[0] == 1.390000e-4
@@ -40,3 +41,35 @@ def test_nubar_452(nubar_test_452, nubar_452_matrix):
     assert obj.correlation_matrix[2,2] == 1.0
     assert np.array_equal(np.sqrt(np.diag(nubar_452_matrix)),obj.uncertainty)
     assert np.array_equal(obj.eig_vals,sorted(obj.eig_vals,reverse=True))
+
+
+@pytest.fixture
+def endf71_pfns_test_file():
+    filename = Path(__file__).parent / "files" / "u235_endf71.txt"
+    tape = ENDFtk.tree.Tape.from_file(str(filename))
+    mat_num = tape.material_numbers[0]
+    mat = tape.material(mat_num)
+    file1 = mat.file(1)
+    file5 = mat.file(5)
+    file35 = mat.file(35)
+    return file1, file5, file35
+
+@pytest.fixture
+def endf71_pfns(endf71_pfns_test_file):
+    file1, file5, file35 = endf71_pfns_test_file
+    energy_lines = file1.section(451).content.split("\n")
+    mean_lines = file5.section(18).content.split("\n")
+    cov_lines = file35.section(18).content.split("\n")
+    return energy_lines, mean_lines, cov_lines
+
+@pytest.fixture
+def endf71_eigs():
+    file_loc = Path(__file__).parent / "files" 
+    return np.load(file_loc/"u235_endf71_eigvals.npy"),np.load(file_loc/"u235_endf71_eigvects.npy")
+
+def test_endf71_pca(endf71_pfns,endf71_eigs):
+    obj = Section(*endf71_pfns)
+    assert np.array_equal(obj.eig_vals,sorted(obj.eig_vals,reverse=True))
+    assert np.allclose(obj.eig_vals, endf71_eigs[0])
+    # check the 20 largest, which are the relevant ones
+    assert np.allclose(np.abs(obj.eig_vects[:,:20]), np.abs(endf71_eigs[1][:,:20]))

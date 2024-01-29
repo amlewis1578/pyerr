@@ -135,7 +135,7 @@ class Section:
         """ Function to get and sort eigenvalues and eigenvectors
             of the absolute covariance matrix """
         
-        eig_vals,eig_vects = np.linalg.eig(self.abs_covariance_matrix)
+        eig_vals,eig_vects = np.linalg.eigh(self.abs_covariance_matrix)
 
         # indices for sorting
         idx = eig_vals.argsort()[::-1]
