@@ -71,6 +71,10 @@ class Section:
     get_eigenvalues
         Function to get sorted eigenvalues and eigenvectors
         of the absolute covariance matrix
+
+    reconstruct_covariance 
+        Function to reconstruct the covariance matrix from the 
+        largest k eigenvalues
     """
 
     def __init__(self,energy_lines, mean_lines, covariance_lines):
@@ -143,3 +147,32 @@ class Section:
         # sorted
         self.eig_vals = eig_vals[idx]
         self.eig_vects = eig_vects[:,idx]
+
+    def reconstruct_covariance(self,k=None):
+        """ Function to reconstruct the covariance matrix from the 
+            largest k eigenvalues
+
+            Parameters
+            ----------
+            k : int, optional, default is None
+                the number of eigenvalues to use. If None, will use
+                all of the eigenvalues of the covariane matrix
+
+            Returns
+            -------
+            numpy array 
+                The covariance matrix reconstructed from the top k
+                eigenvalues
+
+        """
+
+        # set k to all of the eigen values if not given or greater
+        # than the total number
+        if k is None or k > len(self.eig_vals):
+            k = len(self.eig_vals)
+
+        # cut the top k 
+        principle_eig_vals = self.eig_vals[:k]
+        principle_eig_vects = self.eig_vects[:,:k]    
+
+        return principle_eig_vals * principle_eig_vects @ principle_eig_vects.T

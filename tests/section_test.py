@@ -73,3 +73,11 @@ def test_endf71_pca(endf71_pfns,endf71_eigs):
     assert np.allclose(obj.eig_vals, endf71_eigs[0])
     # check the 20 largest, which are the relevant ones
     assert np.allclose(np.abs(obj.eig_vects[:,:20]), np.abs(endf71_eigs[1][:,:20]))
+
+    # check that with all eigenvalues included, reconst cov is the same
+    recon = obj.reconstruct_covariance()
+    assert np.allclose(recon, obj.abs_covariance_matrix)
+
+    # in this case, only 2 are needed to pretty much entirely reconstruct the cov mat
+    recon = obj.reconstruct_covariance(2)
+    assert np.allclose(recon, obj.abs_covariance_matrix)
