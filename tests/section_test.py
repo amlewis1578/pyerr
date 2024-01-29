@@ -39,3 +39,4 @@ def test_nubar_452(nubar_test_452, nubar_452_matrix):
     assert np.array_equal(obj.covariance_matrix, nubar_452_matrix)
     assert obj.correlation_matrix[2,2] == 1.0
     assert np.array_equal(np.sqrt(np.diag(nubar_452_matrix)),obj.uncertainty)
+    assert np.array_equal(obj.eig_vals,sorted(obj.eig_vals,reverse=True))

@@ -55,10 +55,22 @@ class Section:
     correlation_matrix : np.array
         Correlation matrix
 
+    eig_values : np.array
+        Sorted (largest to smallest) eigen values of the
+        absolute covariance matrix
+
+    eig_vectors : np.array
+        Sorted (largest to smallest) eigen vectors of the
+        absolute covariance matrix
+
     Methods
     -------
     get_correlation_matrix
         Function to get the uncertainty vector and correlation matrix
+
+    get_eigenvalues
+        Function to get sorted eigenvalues and eigenvectors
+        of the absolute covariance matrix
     """
 
     def __init__(self,energy_lines, mean_lines, covariance_lines):
@@ -67,11 +79,11 @@ class Section:
         self._covariance = Covariance(covariance_lines,self._energy.num_groups)
 
         # check lengths
-        print(len(self.mean_values))
         assert len(self.mean_values) == len(self.group_boundaries) - 1
         assert len(self.mean_values) == len(self.covariance_matrix)
 
         self.get_correlation_matrix()
+        self.get_eigenvalues()
 
 
     @property
@@ -118,3 +130,16 @@ class Section:
         # create the absolute covariance matrix from the absolute uncertainty
         abs_unc_mat = self.abs_uncertainty*np.identity(len(self.uncertainty))
         self.abs_covariance_matrix = abs_unc_mat@self.correlation_matrix@abs_unc_mat
+
+    def get_eigenvalues(self):
+        """ Function to get and sort eigenvalues and eigenvectors
+            of the absolute covariance matrix """
+        
+        eig_vals,eig_vects = np.linalg.eig(self.abs_covariance_matrix)
+
+        # indices for sorting
+        idx = eig_vals.argsort()[::-1]
+
+        # sorted
+        self.eig_vals = eig_vals[idx]
+        self.eig_vects = eig_vects[:,idx]
