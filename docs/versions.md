@@ -4,3 +4,4 @@
     - `0.3.0` - Covariance classes
     - `0.4.0` - Section class
     - `0.5.0` - Adding absolute uncertainty and covariance
+    - `0.6.0` - Adding sampling capbilities
