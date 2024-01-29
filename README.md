@@ -26,18 +26,25 @@ The `output` object has an attribute `output.section` which is a dictionary that
 
 Each `Section` object has the following attributes:
 
-    - MAT : the material numbers
-    - MF : the MF number that the mean values came from 
-    - MT : the MT number for the reaction
-    - incident_energy : the incident energy at which the processing was done (in eV)
-    - num_groups : the number of energy groups
-    - group_boundaries : the boundaries of the energy groups, in eV
-    - mean_values : mean values for the reaction specified
-    - covariance_matrix : np.array of the relative covariance matrix
-    - correlation_matrix : np.array of the correlation matrix
-    - uncertainty : np.array of the relative uncertainty values 
-    - abs_uncertainty : np.array of the absolute uncertainty values 
-    - abs_covariance : np.array of the absolute covariance matrix
+- `MAT` : the material numbers
+- `MF` : the MF number that the mean values came from 
+- `MT` : the MT number for the reaction
+- `incident_energy` : the incident energy at which the processing was done (in eV)
+- `num_groups` : the number of energy groups
+- `group_boundaries` : the boundaries of the energy groups, in eV
+- `mean_values` : mean values for the reaction specified
+- `covariance_matrix` : np.array of the relative covariance matrix
+- `correlation_matrix` : np.array of the correlation matrix
+- `uncertainty` : np.array of the relative uncertainty values 
+- `abs_uncertainty` : np.array of the absolute uncertainty values 
+- `abs_covariance` : np.array of the absolute covariance matrix
+- `eig_vals` : np.array of sorted eigenvalues
+- `eig_vects` : np.array of sorted eigenvectors
+
+and the following user methods:
+
+- `reconstruct_covariance(k)` : given the number of principle eigenvalues, k, reconstructs the covariance matrix
+- `get_pca_realizations(num_samples, k)` : given the number of samples and the number of principle components (eigenvalues), k, produce sample realizations
 
 
 ## details

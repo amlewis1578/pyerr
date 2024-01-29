@@ -1,4 +1,5 @@
 from pyerr.base import Control, Values
+import numpy as np
 
 
 class EnergyGroupControl(Control):
@@ -52,7 +53,7 @@ class EnergyGroupControl(Control):
         super().__init__(lines)
         self.temperature = self.parsed_values[10]
         self.num_groups = self.parsed_values[12]
-        self.num_boundaries = self.parsed_values[14]
+        self.num_boundaries = np.array(self.parsed_values[14])
 
 
 class EnergyGroupValues(Values):
