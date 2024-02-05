@@ -48,12 +48,16 @@ class MeanControl:
     def __init__(self,line):
         self.line = line
         self.parse_line()
-        self.incident_energy = self.parsed_values[1]
+        
         self.num_groups = self.parsed_values[4]
         self.MAT = self.parsed_values[6]
         self.MF = self.parsed_values[7]
         self.MT = self.parsed_values[8]
         self.parsed_values = self.parsed_values[:self.num_groups+1]
+
+        if self.MF == 5:
+            self.incident_energy = self.parsed_values[1]
+        
 
     def parse_line(self):
         """ Parse the control line by its format string 

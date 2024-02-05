@@ -29,7 +29,7 @@ Each `Section` object has the following attributes:
 - `MAT` : the material numbers
 - `MF` : the MF number that the mean values came from 
 - `MT` : the MT number for the reaction
-- `incident_energy` : the incident energy at which the processing was done (in eV)
+- `incident_energy` : for PFNS, the incident energy at which the processing was done (in eV). For nu-bar or cross section, returns the list of group boundaries
 - `num_groups` : the number of energy groups
 - `group_boundaries` : the boundaries of the energy groups, in eV
 - `mean_values` : mean values for the reaction specified

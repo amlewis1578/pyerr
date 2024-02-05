@@ -109,7 +109,10 @@ class Section:
     
     @property
     def incident_energy(self):
-        return self._mean.incident_energy
+        if self.MF == 5:    
+            return self._mean.incident_energy
+        else:
+            return self._energy.group_boundaries
 
     @property
     def group_boundaries(self):
