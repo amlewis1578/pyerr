@@ -17,6 +17,17 @@ class Section:
     covariance_lines : list
         list of the lines from the file corresponding to the covariance
 
+    lower_limit : float, optional, default is None
+        the lower limit in energy (eV) to cut the values at. If not given, uses the lower 
+        limit of the matrix in the file. If given, will cut out groups below the lower 
+        limit. If the lower limit falls within a group, that group is kept
+
+
+    upper_limit : float, optional, default is None
+        the upper limit in energy (eV) to cut the values at. If not given, uses the upper 
+        limit of the matrix in the file. If given, will cut out groups below the upper 
+        limit. If the upper limit falls within a group, that group is kept
+
     Attributes
     ----------
     MAT : int
@@ -82,12 +93,16 @@ class Section:
         
     """
 
-    def __init__(self,energy_lines, mean_lines, covariance_lines):
-        self._energy = EnergyGroups(energy_lines)
-        self._mean = Mean(mean_lines)
-        self._covariance = Covariance(covariance_lines,self._energy.num_groups)
+    def __init__(self,energy_lines, mean_lines, covariance_lines, lower_limit=None, upper_limit=None):
+        self._energy = EnergyGroups(energy_lines, lower_limit, upper_limit)
+        self._mean = Mean(mean_lines, self._energy.indices)
+        self._covariance = Covariance(covariance_lines,self._energy.control.num_groups, self._energy.indices)
+
+
+
 
         # check lengths
+        print(len(self.mean_values), len(self.group_boundaries))
         assert len(self.mean_values) == len(self.group_boundaries) - 1
         assert len(self.mean_values) == len(self.covariance_matrix)
 
@@ -109,7 +124,10 @@ class Section:
     
     @property
     def incident_energy(self):
-        return self._mean.incident_energy
+        if self.MF == 5:    
+            return self._mean.incident_energy
+        else:
+            return self._energy.group_boundaries
 
     @property
     def group_boundaries(self):

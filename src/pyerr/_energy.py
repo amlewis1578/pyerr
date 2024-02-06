@@ -92,7 +92,7 @@ class EnergyGroupValues(Values):
     def __init__(self,lines,num_values):
         super().__init__(lines)
         self.num_values = num_values
-        self.parsed_values = self.parsed_values[:num_values+1]
+        self.parsed_values = np.array(self.parsed_values[:num_values+1])
 
 
 class EnergyGroups:
@@ -104,6 +104,15 @@ class EnergyGroups:
     lines : list
         list of lines in MF1MT451
 
+    lower_limit : float or None
+        lower limit, in eV, to cut the values at. If None or if the value is 
+        outside the range, no cut is made at the low end
+
+    upper_limit : float or None
+        upper limit, in eV, to cut the values at. If None or if the value is 
+        outside the range, no cut is made at the high end
+
+
     Attributes
     ----------
     control : EnergyGroupControl object
@@ -111,6 +120,9 @@ class EnergyGroups:
 
     values : EnergyGroupValues object
         parsed values lines object
+
+    indices : tuple
+        indices for cutting at the upper and lower limits
 
     group_boundaries : list
         list of group boundaries
@@ -142,20 +154,32 @@ class EnergyGroups:
     """
 
 
-    def __init__(self,lines):
+    def __init__(self,lines, lower_limit, upper_limit):
         self.control = EnergyGroupControl(lines[:2])
         self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
+        if upper_limit is None or upper_limit > np.max(self.values.parsed_values):
+            upper_limit = np.max(self.values.parsed_values)
+        if lower_limit is None or lower_limit < np.min(self.values.parsed_values):
+            lower_limit = np.min(self.values.parsed_values)
+       
+        # get the upper and lower indices
+        #    if limit falls within a group, keep that group
+        lower_ind = np.where(self.values.parsed_values <= lower_limit)[0][-1]
+        upper_ind = np.where(self.values.parsed_values >= upper_limit)[0][0]
+        self.indices = (lower_ind, upper_ind)
+
+
 
     @property
     def group_boundaries(self):
-        return self.values.parsed_values
+        return self.values.parsed_values[self.indices[0]:self.indices[1]+1]
     
     @property
     def num_boundaries(self):
-        return self.control.num_boundaries
+        return len(self.group_boundaries)
     @property
     def num_groups(self):
-        return self.control.num_groups
+        return len(self.group_boundaries) - 1
     
     @property
     def ZA(self):

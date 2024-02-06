@@ -34,6 +34,7 @@ def nubar_452_matrix():
 def test_nubar_452(nubar_test_452, nubar_452_matrix):
     obj = Section(*nubar_test_452)
     assert obj.group_boundaries[0] == 1.390000e-4
+    assert obj.incident_energy[0] == 1.390000e-4
     assert obj.mean_values[0] == 2.487540
     assert obj.covariance_matrix[0,0] == 2.996458e-4
     assert obj.covariance_matrix[28,28] == 2.530043e-4
@@ -70,6 +71,7 @@ def endf71_eigs():
 
 def test_endf71_pca(endf71_pfns,endf71_eigs):
     obj = Section(*endf71_pfns)
+    assert obj.incident_energy == 2.5e5
     assert np.array_equal(obj.eig_vals,sorted(obj.eig_vals,reverse=True))
     assert np.allclose(obj.eig_vals, endf71_eigs[0])
     # check the 20 largest, which are the relevant ones

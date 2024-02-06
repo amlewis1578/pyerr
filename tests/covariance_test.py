@@ -29,6 +29,6 @@ def test_u235_endf81_control(u235_endf81):
 
 
 def test_u235_endf81(u235_endf81, u235_endf81_matrix):
-    obj = Covariance(u235_endf81,640)
+    obj = Covariance(u235_endf81,640, (0,640))
     assert obj.matrix[0,0] == 4.237122e-2
     assert np.array_equal(u235_endf81_matrix,obj.matrix)

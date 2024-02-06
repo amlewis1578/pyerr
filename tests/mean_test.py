@@ -29,7 +29,7 @@ def test_u235_endf81(u235_endf81):
     assert np.isclose(np.sum(obj.parsed_values),1.0)
 
 def test_u235_endf81(u235_endf81):
-    obj = Mean(u235_endf81)
+    obj = Mean(u235_endf81, (0,30))
     assert obj.MT == 18
     assert obj.num_groups == 30
     assert obj.incident_energy == 2.5e5

@@ -48,12 +48,16 @@ class MeanControl:
     def __init__(self,line):
         self.line = line
         self.parse_line()
-        self.incident_energy = self.parsed_values[1]
+        
         self.num_groups = self.parsed_values[4]
         self.MAT = self.parsed_values[6]
         self.MF = self.parsed_values[7]
         self.MT = self.parsed_values[8]
         self.parsed_values = self.parsed_values[:self.num_groups+1]
+
+        if self.MF == 5:
+            self.incident_energy = self.parsed_values[1]
+        
 
     def parse_line(self):
         """ Parse the control line by its format string 
@@ -118,6 +122,9 @@ class Mean:
     lines : list
         list of lines in MF1MT451
 
+    indices : tuple
+        indices for cutting at the upper and lower limits
+
     Attributes
     ----------
     control : MeanControl object
@@ -147,17 +154,19 @@ class Mean:
     """
 
 
-    def __init__(self,lines):
+    def __init__(self,lines, indices):
         self._control = MeanControl(lines[0])
         self._values = MeanValues(lines[1:-2],self._control.num_groups)
+        print(indices)
+        self.values = self._values.parsed_values[indices[0]:indices[1]]
 
-    @property
-    def values(self):
-        return self._values.parsed_values
+    # @property
+    # def values(self):
+    #     return self._values.parsed_values[energy_mask]
     
     @property
     def num_groups(self):
-        return self._control.num_groups
+        return len(self.values)
         
     @property
     def MAT(self):

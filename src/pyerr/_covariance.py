@@ -66,6 +66,9 @@ class Covariance:
     num_groups : int
         number of energy groups, which is size of the matrix
 
+    indices : tuple
+        indices for cutting at the upper and lower limits
+
     Attributes
     ----------
     control : CovarianceControl object
@@ -81,7 +84,7 @@ class Covariance:
 
     """
 
-    def __init__(self,lines,num_groups):
+    def __init__(self,lines,num_groups, indices):
         self.control = CovarianceControl(lines[:2])
         self.matrix = np.zeros((num_groups,num_groups))
 
@@ -90,6 +93,9 @@ class Covariance:
         for i in range(self.control.num_sections):
             if len(cov_lines) > 0:
                 cov_lines = self.parse_section(cov_lines)
+
+        # apply energy mask
+        self.matrix = self.matrix[indices[0]:indices[1], indices[0]:indices[1]]
 
         self.check_covariance_matrix()
         
@@ -140,5 +146,6 @@ class Covariance:
         diagonal = np.diag(self.matrix)
         if np.min(diagonal) <= 0:
             print("Covariance matrix has zero and/or negative values along the diagonal. This may be caused by an inappropriate group structure chosen in NJOY - the original structure in the evaluation should be used instead.")
+            print(len(diagonal))
             print(diagonal)
             sys.exit("Zeros on the diagonal.\n")
