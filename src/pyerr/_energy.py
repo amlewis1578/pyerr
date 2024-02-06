@@ -92,7 +92,7 @@ class EnergyGroupValues(Values):
     def __init__(self,lines,num_values):
         super().__init__(lines)
         self.num_values = num_values
-        self.parsed_values = self.parsed_values[:num_values+1]
+        self.parsed_values = np.array(self.parsed_values[:num_values+1])
 
 
 class EnergyGroups:
@@ -142,20 +142,34 @@ class EnergyGroups:
     """
 
 
-    def __init__(self,lines):
+    def __init__(self,lines, lower_limit, upper_limit):
         self.control = EnergyGroupControl(lines[:2])
         self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
+        if upper_limit is None:
+            upper_limit = np.max(self.values.parsed_values)
+        if lower_limit is None:
+            lower_limit = np.min(self.values.parsed_values)
+        # else:
+            # find the beginning of the energy group containing the lower limit value
+            # print(self.group_boundaries<=lower_limit)
+
+        # print(upper_limit)
+        self.energy_mask = (self.values.parsed_values >= lower_limit) & (self.values.parsed_values <= upper_limit)
+        # print(self.energy_mask)
+
+
+
 
     @property
     def group_boundaries(self):
-        return self.values.parsed_values
+        return self.values.parsed_values[self.energy_mask]
     
     @property
     def num_boundaries(self):
-        return self.control.num_boundaries
+        return np.sum(self.energy_mask)
     @property
     def num_groups(self):
-        return self.control.num_groups
+        return np.sum(self.energy_mask) - 1
     
     @property
     def ZA(self):

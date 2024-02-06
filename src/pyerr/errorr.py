@@ -11,6 +11,17 @@ class ErrorrOutput:
     filename : str
         the ERRORR output file name
 
+    lower_limit : float, optional, default is None
+        the lower limit in energy (eV) to cut the values at. If not given, uses the lower 
+        limit of the matrix in the file. If given, will cut out groups below the lower 
+        limit. If the lower limit falls within a group, that group is kept
+
+
+    upper_limit : float, optional, default is None
+        the upper limit in energy (eV) to cut the values at. If not given, uses the upper 
+        limit of the matrix in the file. If given, will cut out groups below the upper 
+        limit. If the upper limit falls within a group, that group is kept
+
     Attributes
     ----------
     filename : str
@@ -26,7 +37,7 @@ class ErrorrOutput:
     
     """
 
-    def __init__(self,filename):
+    def __init__(self,filename,lower_limit=None, upper_limit=None):
         self.filename = filename
         section_numbers = self.open_errorr_file()
 
@@ -36,7 +47,7 @@ class ErrorrOutput:
             energy_lines = self._mat.file(1).section(451).content.split("\n")
             mean_lines = self._mat.file(mf).section(mt).content.split("\n")
             cov_lines = self._mat.file(mf+30).section(mt).content.split("\n")
-            self.sections[mt] = Section(energy_lines, mean_lines, cov_lines)
+            self.sections[mt] = Section(energy_lines, mean_lines, cov_lines, lower_limit, upper_limit)
 
 
     def open_errorr_file(self):

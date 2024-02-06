@@ -1,5 +1,6 @@
 import pytest
 import ENDFtk
+import numpy as np
 from pathlib import Path
 from pyerr import EnergyGroups
 
@@ -14,7 +15,7 @@ def u235_endf81():
     return energy_groups
 
 def test_u235_endf81(u235_endf81):
-    obj = EnergyGroups(u235_endf81)
+    obj = EnergyGroups(u235_endf81, None, None)
     assert obj.MT == 451
     assert obj.group_boundaries[0] == 0.000139
     assert obj.num_boundaries == obj.num_groups + 1

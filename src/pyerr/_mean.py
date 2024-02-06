@@ -151,17 +151,18 @@ class Mean:
     """
 
 
-    def __init__(self,lines):
+    def __init__(self,lines, energy_mask):
         self._control = MeanControl(lines[0])
         self._values = MeanValues(lines[1:-2],self._control.num_groups)
+        self.values = self._values.parsed_values[energy_mask[:-1]]
 
-    @property
-    def values(self):
-        return self._values.parsed_values
+    # @property
+    # def values(self):
+    #     return self._values.parsed_values[energy_mask]
     
     @property
     def num_groups(self):
-        return self._control.num_groups
+        return len(self.values)
         
     @property
     def MAT(self):

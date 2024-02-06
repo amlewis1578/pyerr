@@ -81,7 +81,7 @@ class Covariance:
 
     """
 
-    def __init__(self,lines,num_groups):
+    def __init__(self,lines,num_groups, energy_mask):
         self.control = CovarianceControl(lines[:2])
         self.matrix = np.zeros((num_groups,num_groups))
 
@@ -90,6 +90,9 @@ class Covariance:
         for i in range(self.control.num_sections):
             if len(cov_lines) > 0:
                 cov_lines = self.parse_section(cov_lines)
+
+        # apply energy mask
+        self.matrix = np.where(energy_mask[:-1], self.matrix,0)
 
         self.check_covariance_matrix()
         
