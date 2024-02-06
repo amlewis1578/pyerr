@@ -51,10 +51,13 @@ def test_energy_boundaries(u235_endf81):
 
     
     obj = ErrorrOutput(u235_endf81,lower_limit = 11.5,upper_limit=28800000)
-    print(obj.sections[18].group_boundaries[:5])
     assert len(obj.sections[18].group_boundaries) == 641-5-2
 
     obj = ErrorrOutput(u235_endf81,lower_limit=10,upper_limit=28800000)
     assert len(obj.sections[18].group_boundaries) == 641-5-1
+
+    # check bounds outside the region - should just default to the whole region
+    obj = ErrorrOutput(u235_endf81,lower_limit=-10,upper_limit=5e7)
+    assert len(obj.sections[18].group_boundaries) == 641
     
 

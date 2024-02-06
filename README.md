@@ -22,7 +22,7 @@ filename = "tape28"
 output = ErrorOutput(filename,lower_limit=1e5, upper_limit=2e7)
 ```
 
-The arguments `lower_limit` and `upper_limit` are optional, with default values of `None`. If given, they are each floats in eV and the values are cut at those values. If the limits fall within a group, the group is kept.
+The arguments `lower_limit` and `upper_limit` are optional, with default values of `None`. If given, they are each floats in eV and the values are cut at those values. If the limits fall within a group, the group is kept. If the upper/lower limit is outside the range of the energy groups, the program will default to upper/lower end of the range.
  
 The `output` object has an attribute `output.section` which is a dictionary that contains `Section` objects for each MT in the file.
 

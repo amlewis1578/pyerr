@@ -145,9 +145,9 @@ class EnergyGroups:
     def __init__(self,lines, lower_limit, upper_limit):
         self.control = EnergyGroupControl(lines[:2])
         self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
-        if upper_limit is None:
+        if upper_limit is None or upper_limit > np.max(self.values.parsed_values):
             upper_limit = np.max(self.values.parsed_values)
-        if lower_limit is None:
+        if lower_limit is None or lower_limit < np.min(self.values.parsed_values):
             lower_limit = np.min(self.values.parsed_values)
        
         # get the upper and lower indices
