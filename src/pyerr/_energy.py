@@ -149,27 +149,25 @@ class EnergyGroups:
             upper_limit = np.max(self.values.parsed_values)
         if lower_limit is None:
             lower_limit = np.min(self.values.parsed_values)
-        # else:
-            # find the beginning of the energy group containing the lower limit value
-            # print(self.group_boundaries<=lower_limit)
-
-        # print(upper_limit)
-        self.energy_mask = (self.values.parsed_values >= lower_limit) & (self.values.parsed_values <= upper_limit)
-        # print(self.energy_mask)
-
+       
+        # get the upper and lower indices
+        #    if limit falls within a group, keep that group
+        lower_ind = np.where(self.values.parsed_values <= lower_limit)[0][-1]
+        upper_ind = np.where(self.values.parsed_values >= upper_limit)[0][0]
+        self.indices = (lower_ind, upper_ind)
 
 
 
     @property
     def group_boundaries(self):
-        return self.values.parsed_values[self.energy_mask]
+        return self.values.parsed_values[self.indices[0]:self.indices[1]+1]
     
     @property
     def num_boundaries(self):
-        return np.sum(self.energy_mask)
+        return len(self.group_boundaries)
     @property
     def num_groups(self):
-        return np.sum(self.energy_mask) - 1
+        return len(self.group_boundaries) - 1
     
     @property
     def ZA(self):

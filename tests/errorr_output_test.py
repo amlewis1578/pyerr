@@ -42,12 +42,19 @@ def test_U235(u235_endf81):
     obj = ErrorrOutput(u235_endf81)
     assert np.isclose(obj.sections[18].abs_covariance_matrix[0,0], 1.06828e-19)
 
-@pytest.mark.notready
 def test_energy_boundaries(u235_endf81):
     obj = ErrorrOutput(u235_endf81,upper_limit=28850000)
-    assert len(obj.sections[18].group_boundaries) == 641-5
+    assert len(obj.sections[18].group_boundaries) == 641-4
 
     obj = ErrorrOutput(u235_endf81,upper_limit=28800000)
-    assert len(obj.sections[18].group_boundaries) == 641-6
+    assert len(obj.sections[18].group_boundaries) == 641-5
+
+    
+    obj = ErrorrOutput(u235_endf81,lower_limit = 11.5,upper_limit=28800000)
+    print(obj.sections[18].group_boundaries[:5])
+    assert len(obj.sections[18].group_boundaries) == 641-5-2
+
+    obj = ErrorrOutput(u235_endf81,lower_limit=10,upper_limit=28800000)
+    assert len(obj.sections[18].group_boundaries) == 641-5-1
     
 

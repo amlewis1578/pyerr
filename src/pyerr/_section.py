@@ -95,13 +95,14 @@ class Section:
 
     def __init__(self,energy_lines, mean_lines, covariance_lines, lower_limit=None, upper_limit=None):
         self._energy = EnergyGroups(energy_lines, lower_limit, upper_limit)
-        self._mean = Mean(mean_lines, self._energy.energy_mask)
-        self._covariance = Covariance(covariance_lines,self._energy.control.num_groups, self._energy.energy_mask)
+        self._mean = Mean(mean_lines, self._energy.indices)
+        self._covariance = Covariance(covariance_lines,self._energy.control.num_groups, self._energy.indices)
 
 
 
 
         # check lengths
+        print(len(self.mean_values), len(self.group_boundaries))
         assert len(self.mean_values) == len(self.group_boundaries) - 1
         assert len(self.mean_values) == len(self.covariance_matrix)
 
