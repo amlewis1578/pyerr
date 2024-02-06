@@ -104,6 +104,15 @@ class EnergyGroups:
     lines : list
         list of lines in MF1MT451
 
+    lower_limit : float or None
+        lower limit, in eV, to cut the values at. If None or if the value is 
+        outside the range, no cut is made at the low end
+
+    upper_limit : float or None
+        upper limit, in eV, to cut the values at. If None or if the value is 
+        outside the range, no cut is made at the high end
+
+
     Attributes
     ----------
     control : EnergyGroupControl object
@@ -111,6 +120,9 @@ class EnergyGroups:
 
     values : EnergyGroupValues object
         parsed values lines object
+
+    indices : tuple
+        indices for cutting at the upper and lower limits
 
     group_boundaries : list
         list of group boundaries

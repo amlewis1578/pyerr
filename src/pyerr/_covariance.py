@@ -66,6 +66,9 @@ class Covariance:
     num_groups : int
         number of energy groups, which is size of the matrix
 
+    indices : tuple
+        indices for cutting at the upper and lower limits
+
     Attributes
     ----------
     control : CovarianceControl object

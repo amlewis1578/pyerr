@@ -122,6 +122,9 @@ class Mean:
     lines : list
         list of lines in MF1MT451
 
+    indices : tuple
+        indices for cutting at the upper and lower limits
+
     Attributes
     ----------
     control : MeanControl object
