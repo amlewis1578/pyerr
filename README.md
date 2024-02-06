@@ -19,9 +19,11 @@ The main user class in `pyerr` is the `ErrorOutput` class. It takes in the path 
 from pyerr import ErrorOutput
 
 filename = "tape28"
-output = ErrorOutput(filename)
+output = ErrorOutput(filename,lower_limit=1e5, upper_limit=2e7)
 ```
 
+The arguments `lower_limit` and `upper_limit` are optional, with default values of `None`. If given, they are each floats in eV and the values are cut at those values. If the limits fall within a group, the group is kept.
+ 
 The `output` object has an attribute `output.section` which is a dictionary that contains `Section` objects for each MT in the file.
 
 Each `Section` object has the following attributes:
@@ -44,7 +46,7 @@ Each `Section` object has the following attributes:
 and the following user methods:
 
 - `reconstruct_covariance(k)` : given the number of principle eigenvalues, k, reconstructs the covariance matrix
-- `get_pca_realizations(num_samples, k)` : given the number of samples and the number of principle components (eigenvalues), k, produce sample realizations
+- `get_pca_realizations(num_samples, k)` : given the number of samples and the number of principal components (eigenvalues), k, produce sample realizations
 
 
 ## details
