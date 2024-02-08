@@ -157,7 +157,6 @@ class Mean:
     def __init__(self,lines, indices):
         self._control = MeanControl(lines[0])
         self._values = MeanValues(lines[1:-2],self._control.num_groups)
-        print(indices)
         self.values = self._values.parsed_values[indices[0]:indices[1]]
 
     # @property
