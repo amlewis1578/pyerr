@@ -102,7 +102,6 @@ class Section:
 
 
         # check lengths
-        print(len(self.mean_values), len(self.group_boundaries))
         assert len(self.mean_values) == len(self.group_boundaries) - 1
         assert len(self.mean_values) == len(self.covariance_matrix)
 
