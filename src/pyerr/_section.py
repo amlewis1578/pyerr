@@ -75,6 +75,11 @@ class Section:
         Sorted (largest to smallest) eigen vectors of the
         absolute covariance matrix
 
+    unc_convergence_table : pandas DataFrame
+        pandas DataFrame with the absolute and relative difference
+        between the overall uncertainty and the uncertainty of
+        the covariance matrix reconstructed with k eigenvalues
+
     Methods
     -------
     get_correlation_matrix
@@ -91,6 +96,10 @@ class Section:
     get_pca_realizations
         Function to sample realizations by PCA, using the largest
         k components.
+
+    quantify_uncertainty_convergence
+        Function to quantify the convergence of the uncertainty 
+        vector as more PCA eigenvalues are added
         
     """
 
