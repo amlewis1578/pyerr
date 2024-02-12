@@ -269,7 +269,6 @@ class Section:
         """
 
         data = []
-        print(len(self.eig_vals))
         for k in range(1,len(self.eig_vals)+1):
             cov = self.reconstruct_covariance(k)
             unc = np.sqrt(np.diag(cov))/self.mean_values

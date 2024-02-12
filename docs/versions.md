@@ -7,3 +7,4 @@
     - `0.6.0` - Adding sampling capabilities
     - `0.7.0` - Adding energy cuts 
     - `0.8.0` - Adding uncertainty convergence method
+        - `0.8.1` - Removing leftover print statements
