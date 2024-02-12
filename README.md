@@ -42,11 +42,13 @@ Each `Section` object has the following attributes:
 - `abs_covariance` : np.array of the absolute covariance matrix
 - `eig_vals` : np.array of sorted eigenvalues
 - `eig_vects` : np.array of sorted eigenvectors
+- `unc_convergence_table` : pandas DataFrame with the absolute and relative difference between the overall uncertainty and the uncertainty of the covariance matrix reconstructed with k eigenvalues
 
 and the following user methods:
 
 - `reconstruct_covariance(k)` : given the number of principle eigenvalues, k, reconstructs the covariance matrix
 - `get_pca_realizations(num_samples, k)` : given the number of samples and the number of principal components (eigenvalues), k, produce sample realizations
+- `quantify_uncertainty_convergence()` : Function to quantify the convergence of the uncertainty vector as more PCA eigenvalues are added. This function takes no parameters
 
 
 ## details

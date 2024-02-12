@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pyerr import EnergyGroups, Mean, Covariance
 
 class Section:
@@ -74,6 +75,11 @@ class Section:
         Sorted (largest to smallest) eigen vectors of the
         absolute covariance matrix
 
+    unc_convergence_table : pandas DataFrame
+        pandas DataFrame with the absolute and relative difference
+        between the overall uncertainty and the uncertainty of
+        the covariance matrix reconstructed with k eigenvalues
+
     Methods
     -------
     get_correlation_matrix
@@ -90,6 +96,10 @@ class Section:
     get_pca_realizations
         Function to sample realizations by PCA, using the largest
         k components.
+
+    quantify_uncertainty_convergence
+        Function to quantify the convergence of the uncertainty 
+        vector as more PCA eigenvalues are added
         
     """
 
@@ -243,3 +253,34 @@ class Section:
         # reshape realization
         return realizations.T
 
+
+    def quantify_uncertainty_convergence(self):
+        """ Function to quantify the convergence of the uncertainty vector
+        as more PCA eigenvalues are added
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None, creates the attribute unc_convergence_table
+        
+        """
+
+        data = []
+        print(len(self.eig_vals))
+        for k in range(1,len(self.eig_vals)+1):
+            cov = self.reconstruct_covariance(k)
+            unc = np.sqrt(np.diag(cov))/self.mean_values
+
+            abs_diff = self.uncertainty - unc
+            rel_diff = abs_diff/self.uncertainty
+
+
+            data.append([k,np.max(abs_diff),np.max(rel_diff)])
+
+        self.unc_convergence_table = pd.DataFrame(data, 
+                                                 columns=['k','abs_diff', 'rel_diff'],
+                                                 )
+        
