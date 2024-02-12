@@ -9,7 +9,9 @@ readme = "readme.md"
 dynamic = ["version"]
 dependencies = [
 	"numpy",
-	"fortranformat"
+	"fortranformat",
+	"pandas",
+	"pyarrow"
 ]
 
 [tool.setuptools.dynamic]
