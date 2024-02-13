@@ -277,7 +277,7 @@ class Section:
             rel_diff = abs_diff/self.uncertainty
 
 
-            data.append([k,np.max(abs_diff),np.max(rel_diff)])
+            data.append([k,np.max(abs_diff[2:]),np.max(rel_diff[2:])])
 
         self.unc_convergence_table = pd.DataFrame(data, 
                                                  columns=['k','abs_diff', 'rel_diff'],
