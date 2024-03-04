@@ -254,19 +254,28 @@ class Section:
         return realizations.T
 
 
-    def quantify_uncertainty_convergence(self):
+    def quantify_uncertainty_convergence(self,e_min=0,e_max=30e6):
         """ Function to quantify the convergence of the uncertainty vector
-        as more PCA eigenvalues are added
+        as more PCA eigenvalues are added, optionally between certain
+        energies.
 
         Parameters
         ----------
-        None
+        e_min : float, optional, default is 0 eV
+            minimum energy to check for convergence at
+
+        e_max : float, optional, default is 30 MeV
+            maximum energy to check for convergence at
 
         Returns
         -------
         None, creates the attribute unc_convergence_table
         
         """
+
+        # get cutoff indices
+        lower_cutoff = np.where(self.group_boundaries>=e_min)[0][0]
+        upper_cutoff = np.where(self.group_boundaries<=e_max)[0][-1] + 1
 
         data = []
         for k in range(1,len(self.eig_vals)+1):
@@ -276,10 +285,16 @@ class Section:
             abs_diff = self.uncertainty - unc
             rel_diff = abs_diff/self.uncertainty
 
+            max_abs = np.max(abs_diff[lower_cutoff:upper_cutoff])
+            abs_ind = np.argmax(abs_diff[lower_cutoff:upper_cutoff])
 
-            data.append([k,np.max(abs_diff[2:]),np.max(rel_diff[2:])])
+            max_rel = np.max(rel_diff[lower_cutoff:upper_cutoff])
+            rel_ind = np.argmax(rel_diff[lower_cutoff:upper_cutoff])
+
+            # add both the indices and the diff values to the table
+            data.append([k,max_abs,int(abs_ind),max_rel,int(rel_ind)])
 
         self.unc_convergence_table = pd.DataFrame(data, 
-                                                 columns=['k','abs_diff', 'rel_diff'],
+                                                 columns=['k','abs_diff','abs_ind','rel_diff','rel_ind'],
                                                  )
         
