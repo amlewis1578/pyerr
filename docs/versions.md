@@ -8,3 +8,4 @@
     - `0.7.0` - Adding energy cuts 
     - `0.8.0` - Adding uncertainty convergence method
         - `0.8.1` - Removing leftover print statements
+    - `0.9.0` - Adding user defined cutoffs to the uncertainty convergence method
