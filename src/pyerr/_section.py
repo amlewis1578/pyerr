@@ -98,8 +98,9 @@ class Section:
         k components.
 
     quantify_uncertainty_convergence
-        Function to quantify the convergence of the uncertainty 
-        vector as more PCA eigenvalues are added
+        Function to quantify the convergence of the uncertainty vector
+        as more PCA eigenvalues are added, optionally between certain
+        energies.
         
     """
 
