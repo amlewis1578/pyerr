@@ -16,7 +16,7 @@ pip install .
 The main user class in `pyerr` is the `ErrorOutput` class. It takes in the path to an ERRORR output file
 
 ```python
-from pyerr import ErrorOutput
+from pyerr import ErrorrOutput
 
 filename = "tape28"
 output = ErrorOutput(filename,lower_limit=1e5, upper_limit=2e7)
