@@ -16,7 +16,7 @@ pip install .
 The main user class in `pyerr` is the `ErrorOutput` class. It takes in the path to an ERRORR output file
 
 ```python
-from pyerr import ErrorOutput
+from pyerr import ErrorrOutput
 
 filename = "tape28"
 output = ErrorOutput(filename,lower_limit=1e5, upper_limit=2e7)
@@ -48,7 +48,7 @@ and the following user methods:
 
 - `reconstruct_covariance(k)` : given the number of principle eigenvalues, k, reconstructs the covariance matrix
 - `get_pca_realizations(num_samples, k)` : given the number of samples and the number of principal components (eigenvalues), k, produce sample realizations
-- `quantify_uncertainty_convergence()` : Function to quantify the convergence of the uncertainty vector as more PCA eigenvalues are added. This function takes no parameters
+- `quantify_uncertainty_convergence()` : Function to quantify the convergence of the uncertainty vector as more PCA eigenvalues are added. This function has two optional parameters, `e_min` and `e_max`, energies in eV, between which to check the convergence.
 
 
 ## details
