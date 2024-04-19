@@ -1,0 +1,12 @@
+- **0**
+    - `0.1.0` - Energy group classes
+    - `0.2.0` - Mean value classes
+    - `0.3.0` - Covariance classes
+    - `0.4.0` - Section class
+    - `0.5.0` - Adding absolute uncertainty and covariance
+    - `0.6.0` - Adding sampling capabilities
+    - `0.7.0` - Adding energy cuts 
+    - `0.8.0` - Adding uncertainty convergence method
+        - `0.8.1` - Removing leftover print statements
+    - `0.9.0` - Adding user defined cutoffs to the uncertainty convergence method
+- **1** - fully working version with example python notebooks
