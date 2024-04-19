@@ -9,3 +9,4 @@
     - `0.8.0` - Adding uncertainty convergence method
         - `0.8.1` - Removing leftover print statements
     - `0.9.0` - Adding user defined cutoffs to the uncertainty convergence method
+- **1** - fully working version with example python notebooks
