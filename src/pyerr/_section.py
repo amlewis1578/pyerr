@@ -67,6 +67,12 @@ class Section:
     correlation_matrix : np.array
         Correlation matrix
 
+    average_energy : float, only if PFNS
+        The average outgoing energy in eV
+
+    average_energy_uncertainty : float, only if PFNS
+        The uncertainty on the average energy in eV
+
     eig_values : np.array
         Sorted (largest to smallest) eigen values of the
         absolute covariance matrix
@@ -101,6 +107,9 @@ class Section:
         Function to quantify the convergence of the uncertainty vector
         as more PCA eigenvalues are added, optionally between certain
         energies.
+
+    calculate_average_energy
+        Function to calculate the PFNS average energy
         
     """
 
@@ -118,6 +127,10 @@ class Section:
 
         self.get_correlation_matrix()
         self.get_eigenvalues()
+
+        # calculate average energy if PFNS
+        if self.MF == 5:
+            self.calculate_average_energy()
 
 
     @property
@@ -299,3 +312,29 @@ class Section:
                                                  columns=['k','abs_diff','abs_ind','rel_diff','rel_ind'],
                                                  )
         
+
+    def calculate_average_energy(self):
+        """ Function to calculate the PFNS average energy
+        
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        
+        """
+
+        if self.MF != 5:
+            print("Can only calculate average energy for PFNS.\n")
+            return None
+        
+        mid_group_energies = (self.group_boundaries[:-1]+self.group_boundaries[1:])/2
+
+        self.average_energy = np.sum(mid_group_energies * self.mean_values)
+
+        sens = np.array(mid_group_energies).reshape((1,len(mid_group_energies)))
+        variance = sens@self.abs_covariance_matrix@sens.T
+
+        self.average_energy_uncertainty = np.sqrt(variance[0,0])
