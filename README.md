@@ -40,6 +40,8 @@ Each `Section` object has the following attributes:
 - `uncertainty` : np.array of the relative uncertainty values 
 - `abs_uncertainty` : np.array of the absolute uncertainty values 
 - `abs_covariance` : np.array of the absolute covariance matrix
+-  `average_energy` : (only if PFNS) float of the average outgoing energy in eV
+-  `average_energy_uncertainty` : (only if PFNS) float of the average outgoing energy uncertainty in eV
 - `eig_vals` : np.array of sorted eigenvalues
 - `eig_vects` : np.array of sorted eigenvectors
 - `unc_convergence_table` : pandas DataFrame with the absolute and relative difference between the overall uncertainty and the uncertainty of the covariance matrix reconstructed with k eigenvalues
