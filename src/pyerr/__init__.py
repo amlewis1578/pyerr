@@ -1,4 +1,4 @@
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 from pyerr._energy import EnergyGroupControl, EnergyGroupValues, EnergyGroups
 from pyerr._mean import MeanControl, MeanValues, Mean

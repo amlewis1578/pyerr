@@ -11,3 +11,4 @@
     - `0.9.0` - Adding user defined cutoffs to the uncertainty convergence method
 - **1** - fully working version with example python notebooks
     - `1.1.0` - added average energy calculation
+        - `1.1.1` - fixed number in test and improved error message for covariance matrix
