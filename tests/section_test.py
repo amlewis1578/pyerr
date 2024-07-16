@@ -43,6 +43,7 @@ def test_nubar_452(nubar_test_452, nubar_452_matrix):
     assert obj.correlation_matrix[2,2] == 1.0
     assert np.array_equal(np.sqrt(np.diag(nubar_452_matrix)),obj.uncertainty)
     assert np.array_equal(obj.eig_vals,sorted(obj.eig_vals,reverse=True))
+    assert "average_energy" not in obj.__dict__.keys()
 
 
 @pytest.fixture
@@ -68,6 +69,13 @@ def endf71_pfns(endf71_pfns_test_file):
 def endf71_eigs():
     file_loc = Path(__file__).parent / "files" 
     return np.load(file_loc/"u235_endf71_eigvals.npy"),np.load(file_loc/"u235_endf71_eigvects.npy")
+
+
+def test_average_energy(endf71_pfns):
+    obj = Section(*endf71_pfns)
+    assert "average_energy" in obj.__dict__.keys()
+    assert np.isclose(obj.average_energy,2.032238561494875e6)
+    assert np.isclose(obj.average_energy_uncertainty, 0.07429457079357842e6)
 
 def test_endf71_pca(endf71_pfns,endf71_eigs):
     obj = Section(*endf71_pfns)
