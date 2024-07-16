@@ -139,13 +139,17 @@ class Covariance:
     def check_covariance_matrix(self):
         """ function to check the covariance matrix for:
         
-        - zeros on the diagonal (gracefully crash)
+        - zeros/neg values on the diagonal (gracefully crash)
         
         """
 
         diagonal = np.diag(self.matrix)
         if np.min(diagonal) <= 0:
-            print("Covariance matrix has zero and/or negative values along the diagonal. This may be caused by an inappropriate group structure chosen in NJOY - the original structure in the evaluation should be used instead.")
-            print(len(diagonal))
+            print("Covariance matrix has zero and/or negative values along the diagonal.")
+            print("This may be caused by:\n\n  -BROADR producing zeros for the fission cross section.")
+            print("\tRun BROADR with thnmax as low as reasonable for")
+            print("\tthis problem (at least below the energy of the")
+            print("\tgroup that is zero).")
+            print(f"\nThe {len(diagonal)} diagonal values are: ")
             print(diagonal)
-            sys.exit("Zeros on the diagonal.\n")
+            sys.exit("Bad diagonal values.\n")
