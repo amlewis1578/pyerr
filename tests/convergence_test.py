@@ -26,5 +26,5 @@ def test_convergence_table(u235_endf81):
     pfns.quantify_uncertainty_convergence(e_max=10e6)
     assert 'k' in pfns.unc_convergence_table.columns
     print(pfns.unc_convergence_table.head())
-    assert pfns.unc_convergence_table.rel_ind.iloc[0] == 1
+    assert pfns.unc_convergence_table.abs_ind.iloc[0] == 1
     assert pfns.unc_convergence_table.rel_ind.iloc[4] == 0
