@@ -56,7 +56,7 @@ class ErrorrOutput:
         mat_num = tape.material_numbers[0]
         self._mat = tape.material(mat_num)
 
-        list_of_mfs = self._mat.file_numbers[:]
+        list_of_mfs = self._mat.file_numbers.to_list()
 
         # check that File 1 is there
         assert 1 in list_of_mfs
