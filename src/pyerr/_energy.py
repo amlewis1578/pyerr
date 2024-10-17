@@ -4,7 +4,7 @@ import numpy as np
 
 class EnergyGroupControl(Control):
     """
-    Class to parse energy group control lines from the ERRORR files. 
+    Class to parse energy group control lines from the ERRORR files.
 
     Parameters
     ----------
@@ -49,7 +49,7 @@ class EnergyGroupControl(Control):
         Parse the control lines by their format string
     """
 
-    def __init__(self,lines):
+    def __init__(self, lines):
         super().__init__(lines)
         self.temperature = self.parsed_values[10]
         self.num_groups = self.parsed_values[12]
@@ -58,7 +58,7 @@ class EnergyGroupControl(Control):
 
 class EnergyGroupValues(Values):
     """
-    Class to parse energy group boundaries  
+    Class to parse energy group boundaries
 
     Parameters
     ----------
@@ -89,15 +89,16 @@ class EnergyGroupValues(Values):
 
 
     """
-    def __init__(self,lines,num_values):
+
+    def __init__(self, lines, num_values):
         super().__init__(lines)
         self.num_values = num_values
-        self.parsed_values = np.array(self.parsed_values[:num_values+1])
+        self.parsed_values = np.array(self.parsed_values[: num_values + 1])
 
 
 class EnergyGroups:
     """
-    Class to parse energy group section of the ERRORR file, in MF1MT451  
+    Class to parse energy group section of the ERRORR file, in MF1MT451
 
     Parameters
     ----------
@@ -105,11 +106,11 @@ class EnergyGroups:
         list of lines in MF1MT451
 
     lower_limit : float or None
-        lower limit, in eV, to cut the values at. If None or if the value is 
+        lower limit, in eV, to cut the values at. If None or if the value is
         outside the range, no cut is made at the low end
 
     upper_limit : float or None
-        upper limit, in eV, to cut the values at. If None or if the value is 
+        upper limit, in eV, to cut the values at. If None or if the value is
         outside the range, no cut is made at the high end
 
 
@@ -150,58 +151,55 @@ class EnergyGroups:
 
     temperature : float
         temperature at which the evaluation was processed
-        
+
     """
 
-
-    def __init__(self,lines, lower_limit, upper_limit):
+    def __init__(self, lines, lower_limit, upper_limit):
         self.control = EnergyGroupControl(lines[:2])
-        self.values = EnergyGroupValues(lines[2:-2],self.control.num_groups)
+        self.values = EnergyGroupValues(lines[2:-2], self.control.num_groups)
         if upper_limit is None or upper_limit > np.max(self.values.parsed_values):
             upper_limit = np.max(self.values.parsed_values)
         if lower_limit is None or lower_limit < np.min(self.values.parsed_values):
             lower_limit = np.min(self.values.parsed_values)
-       
+
         # get the upper and lower indices
         #    if limit falls within a group, keep that group
         lower_ind = np.where(self.values.parsed_values <= lower_limit)[0][-1]
         upper_ind = np.where(self.values.parsed_values >= upper_limit)[0][0]
         self.indices = (lower_ind, upper_ind)
 
-
-
     @property
     def group_boundaries(self):
-        return self.values.parsed_values[self.indices[0]:self.indices[1]+1]
-    
+        return self.values.parsed_values[self.indices[0] : self.indices[1] + 1]
+
     @property
     def num_boundaries(self):
         return len(self.group_boundaries)
+
     @property
     def num_groups(self):
         return len(self.group_boundaries) - 1
-    
+
     @property
     def ZA(self):
-        return self.control.ZA  
-    
+        return self.control.ZA
+
     @property
     def AWR(self):
-        return self.control.AWR 
-        
+        return self.control.AWR
+
     @property
     def MAT(self):
-        return self.control.MAT 
+        return self.control.MAT
 
     @property
     def MF(self):
-        return self.control.MF 
+        return self.control.MF
 
-    @property 
+    @property
     def MT(self):
-        return self.control.MT  
-    
+        return self.control.MT
+
     @property
     def temperature(self):
         return self.control.temperature
-

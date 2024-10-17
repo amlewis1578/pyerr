@@ -1,11 +1,12 @@
-from pyerr.base import  Control, Values
+from pyerr.base import Control, Values
 import fortranformat as ff
 import numpy as np
 import sys
 
+
 class CovarianceControl(Control):
     """
-    Class to parse covariance control lines from the ERRORR files. 
+    Class to parse covariance control lines from the ERRORR files.
 
     Parameters
     ----------
@@ -48,7 +49,7 @@ class CovarianceControl(Control):
         Parse the control lines by their format string
     """
 
-    def __init__(self,lines):
+    def __init__(self, lines):
         super().__init__(lines)
         self.num_sections = self.parsed_values[15]
         self.MT1 = self.parsed_values[13]
@@ -56,7 +57,7 @@ class CovarianceControl(Control):
 
 class Covariance:
     """
-    Class to parse the covariance section of the ERRORR file 
+    Class to parse the covariance section of the ERRORR file
 
     Parameters
     ----------
@@ -73,7 +74,7 @@ class Covariance:
     ----------
     control : CovarianceControl object
         parsed control lines object
-    
+
     matrix : np.array
         2D covariance matrix
 
@@ -84,9 +85,9 @@ class Covariance:
 
     """
 
-    def __init__(self,lines,num_groups, indices):
+    def __init__(self, lines, num_groups, indices):
         self.control = CovarianceControl(lines[:2])
-        self.matrix = np.zeros((num_groups,num_groups))
+        self.matrix = np.zeros((num_groups, num_groups))
 
         cov_lines = lines[2:-2]
 
@@ -95,12 +96,11 @@ class Covariance:
                 cov_lines = self.parse_section(cov_lines)
 
         # apply energy mask
-        self.matrix = self.matrix[indices[0]:indices[1], indices[0]:indices[1]]
+        self.matrix = self.matrix[indices[0] : indices[1], indices[0] : indices[1]]
 
         self.check_covariance_matrix()
-        
 
-    def parse_section(self,lines):
+    def parse_section(self, lines):
         """
         function to parse each individual set of values
 
@@ -115,12 +115,12 @@ class Covariance:
             the list of lines with the already-parsed lines popped off
 
         """
-        section_cont = ff.FortranRecordReader('(2G11.0,4I11)')
-        section_values = ff.FortranRecordReader('(6G11.0)')
+        section_cont = ff.FortranRecordReader("(2G11.0,4I11)")
+        section_values = ff.FortranRecordReader("(6G11.0)")
         _, _, _, mt1_group, num_values, mt_group = section_cont.read(lines.pop(0))
 
         # number of lines to read
-        num_lines = int(np.ceil(num_values/6))
+        num_lines = int(np.ceil(num_values / 6))
 
         # read into list of lists
         values = [section_values.read(lines.pop(0)) for i in range(num_lines)]
@@ -132,21 +132,23 @@ class Covariance:
         values = values[:num_values]
 
         # fill in matrix
-        self.matrix[mt_group-1,mt1_group-1:mt1_group-1+num_values] = values
+        self.matrix[mt_group - 1, mt1_group - 1 : mt1_group - 1 + num_values] = values
 
         return lines
-    
+
     def check_covariance_matrix(self):
-        """ function to check the covariance matrix for:
-        
+        """function to check the covariance matrix for:
+
         - zeros/neg values on the diagonal (gracefully crash)
-        
+
         """
 
         diagonal = np.diag(self.matrix)
         if np.min(diagonal) <= 0:
             print("Covariance matrix has zero and/or negative values along the diagonal.")
-            print("This may be caused by:\n\n  -BROADR producing zeros for the fission cross section.")
+            print(
+                "This may be caused by:\n\n  -BROADR producing zeros for the fission cross section."
+            )
             print("\tRun BROADR with thnmax as low as reasonable for")
             print("\tthis problem (at least below the energy of the")
             print("\tgroup that is zero).")

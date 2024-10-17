@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from pyerr import EnergyGroups
 
+
 @pytest.fixture
 def u235_endf81():
     filename = Path(__file__).parent / "files" / "u235_endf81_30.txt"
@@ -13,6 +14,7 @@ def u235_endf81():
     file1 = mat.file(1)
     energy_groups = file1.section(451).content.split("\n")
     return energy_groups
+
 
 def test_u235_endf81(u235_endf81):
     obj = EnergyGroups(u235_endf81, None, None)
