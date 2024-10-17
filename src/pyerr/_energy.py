@@ -3,9 +3,7 @@ import numpy as np
 
 
 class EnergyGroupControl(Control):
-    """
-
-    Class to parse energy group control lines from the ERRORR files.
+    """Class to parse energy group control lines from the ERRORR files.
 
     Parameters
     ----------
