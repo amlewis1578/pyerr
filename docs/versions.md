@@ -12,3 +12,4 @@
 - **1** - fully working version with example python notebooks
     - `1.1.0` - added average energy calculation
         - `1.1.1` - fixed number in test and improved error message for covariance matrix
+        - `1.1.2` - fixed the way that the `ENDFtk` series are converted to Python lists 
