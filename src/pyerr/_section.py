@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pyerr import EnergyGroups, Mean, Covariance
 
+
 class Section:
     """
     Class to hold a single section (MT value) from an ERRORR file, which includes
@@ -19,14 +20,14 @@ class Section:
         list of the lines from the file corresponding to the covariance
 
     lower_limit : float, optional, default is None
-        the lower limit in energy (eV) to cut the values at. If not given, uses the lower 
-        limit of the matrix in the file. If given, will cut out groups below the lower 
+        the lower limit in energy (eV) to cut the values at. If not given, uses the lower
+        limit of the matrix in the file. If given, will cut out groups below the lower
         limit. If the lower limit falls within a group, that group is kept
 
 
     upper_limit : float, optional, default is None
-        the upper limit in energy (eV) to cut the values at. If not given, uses the upper 
-        limit of the matrix in the file. If given, will cut out groups below the upper 
+        the upper limit in energy (eV) to cut the values at. If not given, uses the upper
+        limit of the matrix in the file. If given, will cut out groups below the upper
         limit. If the upper limit falls within a group, that group is kept
 
     Attributes
@@ -45,7 +46,7 @@ class Section:
 
     num_groups : int
         Number of energy groups
-        
+
     group_boundaries : int
         Boundaries of the energy groups
 
@@ -95,8 +96,8 @@ class Section:
         Function to get sorted eigenvalues and eigenvectors
         of the absolute covariance matrix
 
-    reconstruct_covariance 
-        Function to reconstruct the covariance matrix from the 
+    reconstruct_covariance
+        Function to reconstruct the covariance matrix from the
         largest k eigenvalues
 
     get_pca_realizations
@@ -110,16 +111,17 @@ class Section:
 
     calculate_average_energy
         Function to calculate the PFNS average energy
-        
+
     """
 
-    def __init__(self,energy_lines, mean_lines, covariance_lines, lower_limit=None, upper_limit=None):
+    def __init__(
+        self, energy_lines, mean_lines, covariance_lines, lower_limit=None, upper_limit=None
+    ):
         self._energy = EnergyGroups(energy_lines, lower_limit, upper_limit)
         self._mean = Mean(mean_lines, self._energy.indices)
-        self._covariance = Covariance(covariance_lines,self._energy.control.num_groups, self._energy.indices)
-
-
-
+        self._covariance = Covariance(
+            covariance_lines, self._energy.control.num_groups, self._energy.indices
+        )
 
         # check lengths
         assert len(self.mean_values) == len(self.group_boundaries) - 1
@@ -132,22 +134,21 @@ class Section:
         if self.MF == 5:
             self.calculate_average_energy()
 
-
     @property
     def MAT(self):
         return self._mean.MAT
-    
+
     @property
     def MF(self):
         return self._mean.MF
-    
+
     @property
     def MT(self):
         return self._mean.MT
-    
+
     @property
     def incident_energy(self):
-        if self.MF == 5:    
+        if self.MF == 5:
             return self._mean.incident_energy
         else:
             return self._energy.group_boundaries
@@ -159,43 +160,45 @@ class Section:
     @property
     def num_groups(self):
         return self._energy.num_groups
-    
+
     @property
     def mean_values(self):
         return self._mean.values
-    
+
     @property
     def covariance_matrix(self):
         return self._covariance.matrix
-    
+
     def get_correlation_matrix(self):
-        """ Function to get the uncertainty vector and correlation matrix """
+        """Function to get the uncertainty vector and correlation matrix"""
         self.uncertainty = np.sqrt(np.diag(self.covariance_matrix))
         self.abs_uncertainty = self.uncertainty * self.mean_values
 
-        unc_mat = self.uncertainty*np.identity(len(self.uncertainty))
-        
-        self.correlation_matrix = np.linalg.inv(unc_mat)@self.covariance_matrix@np.linalg.inv(unc_mat).T
+        unc_mat = self.uncertainty * np.identity(len(self.uncertainty))
+
+        self.correlation_matrix = (
+            np.linalg.inv(unc_mat) @ self.covariance_matrix @ np.linalg.inv(unc_mat).T
+        )
 
         # create the absolute covariance matrix from the absolute uncertainty
-        abs_unc_mat = self.abs_uncertainty*np.identity(len(self.uncertainty))
-        self.abs_covariance_matrix = abs_unc_mat@self.correlation_matrix@abs_unc_mat
+        abs_unc_mat = self.abs_uncertainty * np.identity(len(self.uncertainty))
+        self.abs_covariance_matrix = abs_unc_mat @ self.correlation_matrix @ abs_unc_mat
 
     def get_eigenvalues(self):
-        """ Function to get and sort eigenvalues and eigenvectors
-            of the absolute covariance matrix """
-        
-        eig_vals,eig_vects = np.linalg.eigh(self.abs_covariance_matrix)
+        """Function to get and sort eigenvalues and eigenvectors
+        of the absolute covariance matrix"""
+
+        eig_vals, eig_vects = np.linalg.eigh(self.abs_covariance_matrix)
 
         # indices for sorting
         idx = eig_vals.argsort()[::-1]
 
         # sorted
         self.eig_vals = eig_vals[idx]
-        self.eig_vects = eig_vects[:,idx]
+        self.eig_vects = eig_vects[:, idx]
 
-    def reconstruct_covariance(self,k=None):
-        """ Function to reconstruct the covariance matrix from the 
+    def reconstruct_covariance(self, k=None):
+        """Function to reconstruct the covariance matrix from the
         largest k eigenvalues
 
         Parameters
@@ -206,7 +209,7 @@ class Section:
 
         Returns
         -------
-        numpy array 
+        numpy array
             The covariance matrix reconstructed from the top k
             eigenvalues
 
@@ -217,15 +220,15 @@ class Section:
         if k is None or k > len(self.eig_vals):
             k = len(self.eig_vals)
 
-        # cut the top k 
+        # cut the top k
         principle_eig_vals = self.eig_vals[:k]
-        principle_eig_vects = self.eig_vects[:,:k]    
+        principle_eig_vects = self.eig_vects[:, :k]
 
         # in Rising 2013, Equaton (10)
         return principle_eig_vals * principle_eig_vects @ principle_eig_vects.T
-    
-    def get_pca_realizations(self,num_samples,k=None):
-        """ Function to sample realizations by PCA, using the largest
+
+    def get_pca_realizations(self, num_samples, k=None):
+        """Function to sample realizations by PCA, using the largest
         k components.
 
         Parameters
@@ -240,8 +243,8 @@ class Section:
         Returns
         -------
         numpy array
-            the sampled realizations        
-        
+            the sampled realizations
+
         """
 
         # set k to all of the eigen values if not given or greater
@@ -249,27 +252,26 @@ class Section:
         if k is None or k > len(self.eig_vals):
             k = len(self.eig_vals)
 
-        # cut the top k 
+        # cut the top k
         principle_eig_vals = self.eig_vals[:k]
-        principle_eig_vects = self.eig_vects[:,:k]    
+        principle_eig_vects = self.eig_vects[:, :k]
 
         # get samples
-        gaussian_samples = np.random.normal(0,1,(k,num_samples))
+        gaussian_samples = np.random.normal(0, 1, (k, num_samples))
         k_sum = np.sqrt(principle_eig_vals) * principle_eig_vects @ gaussian_samples
 
         # reshape the mean vector
-        mean_vect = np.array(self.mean_values).reshape((len(self.mean_values),1))
+        mean_vect = np.array(self.mean_values).reshape((len(self.mean_values), 1))
         mean_vect = np.repeat(mean_vect, num_samples, axis=1)
-        
+
         # Rising 2013 equation (7)
         realizations = mean_vect + k_sum
 
         # reshape realization
         return realizations.T
 
-
-    def quantify_uncertainty_convergence(self,e_min=0,e_max=30e6):
-        """ Function to quantify the convergence of the uncertainty vector
+    def quantify_uncertainty_convergence(self, e_min=0, e_max=30e6):
+        """Function to quantify the convergence of the uncertainty vector
         as more PCA eigenvalues are added, optionally between certain
         energies.
 
@@ -284,20 +286,20 @@ class Section:
         Returns
         -------
         None, creates the attribute unc_convergence_table
-        
+
         """
 
         # get cutoff indices
-        lower_cutoff = np.where(self.group_boundaries>=e_min)[0][0]
-        upper_cutoff = np.where(self.group_boundaries<=e_max)[0][-1] + 1
+        lower_cutoff = np.where(self.group_boundaries >= e_min)[0][0]
+        upper_cutoff = np.where(self.group_boundaries <= e_max)[0][-1] + 1
 
         data = []
-        for k in range(1,len(self.eig_vals)+1):
+        for k in range(1, len(self.eig_vals) + 1):
             cov = self.reconstruct_covariance(k)
-            unc = np.sqrt(np.diag(cov))/self.mean_values
+            unc = np.sqrt(np.diag(cov)) / self.mean_values
 
             abs_diff = self.uncertainty - unc
-            rel_diff = abs_diff/self.uncertainty
+            rel_diff = abs_diff / self.uncertainty
 
             max_abs = np.max(abs_diff[lower_cutoff:upper_cutoff])
             abs_ind = np.argmax(abs_diff[lower_cutoff:upper_cutoff])
@@ -306,16 +308,16 @@ class Section:
             rel_ind = np.argmax(rel_diff[lower_cutoff:upper_cutoff])
 
             # add both the indices and the diff values to the table
-            data.append([k,max_abs,int(abs_ind),max_rel,int(rel_ind)])
+            data.append([k, max_abs, int(abs_ind), max_rel, int(rel_ind)])
 
-        self.unc_convergence_table = pd.DataFrame(data, 
-                                                 columns=['k','abs_diff','abs_ind','rel_diff','rel_ind'],
-                                                 )
-        
+        self.unc_convergence_table = pd.DataFrame(
+            data,
+            columns=["k", "abs_diff", "abs_ind", "rel_diff", "rel_ind"],
+        )
 
     def calculate_average_energy(self):
-        """ Function to calculate the PFNS average energy
-        
+        """Function to calculate the PFNS average energy
+
         Parameters
         ----------
         None
@@ -323,18 +325,18 @@ class Section:
         Returns
         -------
         None
-        
+
         """
 
         if self.MF != 5:
             print("Can only calculate average energy for PFNS.\n")
             return None
-        
-        mid_group_energies = (self.group_boundaries[:-1]+self.group_boundaries[1:])/2
+
+        mid_group_energies = (self.group_boundaries[:-1] + self.group_boundaries[1:]) / 2
 
         self.average_energy = np.sum(mid_group_energies * self.mean_values)
 
-        sens = np.array(mid_group_energies).reshape((1,len(mid_group_energies)))
-        variance = sens@self.abs_covariance_matrix@sens.T
+        sens = np.array(mid_group_energies).reshape((1, len(mid_group_energies)))
+        variance = sens @ self.abs_covariance_matrix @ sens.T
 
-        self.average_energy_uncertainty = np.sqrt(variance[0,0])
+        self.average_energy_uncertainty = np.sqrt(variance[0, 0])

@@ -36,3 +36,21 @@ markers = [
 ]
 python_files = "tests/*test.py"
 addopts = "-m 'not slow  and not notready and not fishing '"
+
+
+[tool.black]
+line-length = 99
+include = '\.pyi?$'
+exclude = '''
+    /(
+        \.git
+      | \.hg
+      | \.mypy_cache
+      | \.tox
+      | \.venv
+	  | \.vscode
+      | _build
+      | build
+      | dist
+    )/
+	'''
