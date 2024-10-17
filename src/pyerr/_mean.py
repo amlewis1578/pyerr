@@ -1,11 +1,11 @@
-from pyerr.base import  Values
+from pyerr.base import Values
 import fortranformat as ff
 import numpy as np
 
 
 class MeanControl:
     """
-    Class to parse mean values control lines from the ERRORR files. 
+    Class to parse mean values control lines from the ERRORR files.
 
     For some reason this section does not have the first control line,
     so the Control base class is not used
@@ -45,23 +45,22 @@ class MeanControl:
         Parse the control lines by their format string
     """
 
-    def __init__(self,line):
+    def __init__(self, line):
         self.line = line
         self.parse_line()
-        
+
         self.num_groups = self.parsed_values[4]
         self.MAT = self.parsed_values[6]
         self.MF = self.parsed_values[7]
         self.MT = self.parsed_values[8]
-        self.parsed_values = self.parsed_values[:self.num_groups+1]
+        self.parsed_values = self.parsed_values[: self.num_groups + 1]
 
         if self.MF == 5:
             self.incident_energy = self.parsed_values[1]
-        
 
     def parse_line(self):
-        """ Parse the control line by its format string 
-        
+        """Parse the control line by its format string
+
         Parameters
         ----------
         None
@@ -71,13 +70,13 @@ class MeanControl:
         None, sets the attribute self.parsed_values
 
         """
-        control_line = ff.FortranRecordReader('(2G11.0,4I11,I4,I2,I3,I5)')
+        control_line = ff.FortranRecordReader("(2G11.0,4I11,I4,I2,I3,I5)")
         self.parsed_values = control_line.read(self.line)
 
 
 class MeanValues(Values):
     """
-    Class to parse mean values 
+    Class to parse mean values
 
     Parameters
     ----------
@@ -108,14 +107,16 @@ class MeanValues(Values):
 
 
     """
-    def __init__(self,lines,num_values):
+
+    def __init__(self, lines, num_values):
         super().__init__(lines)
         self.num_values = num_values
         self.parsed_values = np.array(self.parsed_values[:num_values])
 
+
 class Mean:
     """
-    Class to parse mean values section of the ERRORR file 
+    Class to parse mean values section of the ERRORR file
 
     Parameters
     ----------
@@ -150,37 +151,34 @@ class Mean:
 
     incident_energy : float
         Incident energy for the spectrum, if PFNS
-        
+
     """
 
-
-    def __init__(self,lines, indices):
+    def __init__(self, lines, indices):
         self._control = MeanControl(lines[0])
-        self._values = MeanValues(lines[1:-2],self._control.num_groups)
-        self.values = self._values.parsed_values[indices[0]:indices[1]]
+        self._values = MeanValues(lines[1:-2], self._control.num_groups)
+        self.values = self._values.parsed_values[indices[0] : indices[1]]
 
     # @property
     # def values(self):
     #     return self._values.parsed_values[energy_mask]
-    
+
     @property
     def num_groups(self):
         return len(self.values)
-        
+
     @property
     def MAT(self):
-        return self._control.MAT 
+        return self._control.MAT
 
     @property
     def MF(self):
-        return self._control.MF 
+        return self._control.MF
 
-    @property 
+    @property
     def MT(self):
-        return self._control.MT  
-    
+        return self._control.MT
+
     @property
     def incident_energy(self):
         return self._control.incident_energy
-    
-

@@ -4,6 +4,7 @@ from pathlib import Path
 from pyerr.base import Values
 from pyerr import EnergyGroupValues
 
+
 @pytest.fixture
 def u235_endf81():
     filename = Path(__file__).parent / "files" / "u235_endf81_30.txt"
@@ -28,6 +29,6 @@ def test_energies_U235_ENDF81(u235_endf81):
     energy_groups = file1.section(451)
     lines = energy_groups.content.split("\n")
     lines = lines[2:-2]
-    obj = EnergyGroupValues(lines,30)
+    obj = EnergyGroupValues(lines, 30)
     assert obj.parsed_values[0] == 0.000139
     assert obj.parsed_values[-1] == 17000000.0

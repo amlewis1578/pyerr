@@ -1,9 +1,10 @@
 import fortranformat as ff
 from abc import ABC
 
+
 class Control(ABC):
     """
-    Abstract class to parse control lines from the ERRORR files. 
+    Abstract class to parse control lines from the ERRORR files.
 
     Parameters
     ----------
@@ -40,7 +41,8 @@ class Control(ABC):
 
 
     """
-    def __init__(self,lines):
+
+    def __init__(self, lines):
         self.lines = lines
         self.parse_lines()
         self.ZA = self.parsed_values[0]
@@ -50,8 +52,8 @@ class Control(ABC):
         self.MT = self.parsed_values[8]
 
     def parse_lines(self):
-        """ Parse the control lines by their format string 
-        
+        """Parse the control lines by their format string
+
         Parameters
         ----------
         None
@@ -61,6 +63,6 @@ class Control(ABC):
         None, sets the attribute self.parsed_values
 
         """
-        control_line = ff.FortranRecordReader('(2G11.0,4I11,I4,I2,I3,I5)')
+        control_line = ff.FortranRecordReader("(2G11.0,4I11,I4,I2,I3,I5)")
         parsed_lines = [control_line.read(line) for line in self.lines]
         self.parsed_values = [item for line in parsed_lines for item in line]
